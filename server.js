@@ -1,23 +1,29 @@
+require('dotenv').config();
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
-
 const cors = require('cors')
-
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
 
+const { routes  } = require('./src/routes');
+const { model } = require('./src/model')
+
+// try connect to DB
+mongoose.connect(process.env.MLAB_URI, {
+  useMongoClient: true,
+});
+
+// init model
+const userModel = model.user.init(mongoose);
+
+const app = express()
 app.use(cors())
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
-
-
 app.use(express.static('public'))
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html')
-});
 
+// register routes
+routes.register(app, {user: userModel});
 
 // Not found middleware
 app.use((req, res, next) => {

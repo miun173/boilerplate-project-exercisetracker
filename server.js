@@ -14,6 +14,7 @@ mongoose.connect(process.env.MLAB_URI, {
 
 // init model
 const userModel = model.user.init(mongoose);
+const excerciseModel = model.exercise.init(mongoose);
 
 const app = express()
 app.use(cors())
@@ -23,7 +24,10 @@ app.use(bodyParser.json())
 app.use(express.static('public'))
 
 // register routes
-routes.register(app, {user: userModel});
+routes.register(app, {
+  user: userModel,
+  exercise: excerciseModel,
+});
 
 // Not found middleware
 app.use((req, res, next) => {

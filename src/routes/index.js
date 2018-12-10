@@ -25,6 +25,31 @@ function register(app,  model) {
         res.status(400).json({error: error});                
       })
   });
+
+  app.post('/api/exercise/add', (req, res) => {
+    const { userId, description, duration, date } = req.body
+    // TODO: validate the input body
+    if(!userId || !description || !duration || !date) {
+      res.status(400).json({error: "field_cannot_empty"});
+    }
+
+    // TODO: parse date into unix time
+
+    repository.remote.createExercise(model.user, model.exercise, 
+      { userId, description, duration, date })
+      .then((newExercise) => {
+        console.log("new exercise id", newExercise.id);
+        res.status(200).redirect('/');
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        res.status(400).json({error: error.message})
+      })
+    
+    console.log(userId, description, duration, date);
+  })
+
+  app.get('/api/exercise/log', (req, res) => {
 }
 
 module.exports.routes = {

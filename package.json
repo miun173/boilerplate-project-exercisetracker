@@ -25,5 +25,8 @@
 		"node",
 		"gomix",
 		"express"
-	]
+	],
+	"devDependencies": {
+		"nodemon": "^1.18.7"
+	}
 }

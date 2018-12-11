@@ -8,9 +8,13 @@ const { routes  } = require('./src/routes');
 const { model } = require('./src/model')
 
 // try connect to DB
-mongoose.connect(process.env.MLAB_URI, {
-  useMongoClient: true,
-});
+try {
+  mongoose.connect(process.env.MLAB_URI, {
+    useMongoClient: true,
+  })
+} catch(error) {
+  console.log(error); 
+}
 
 // init model
 const userModel = model.user.init(mongoose);

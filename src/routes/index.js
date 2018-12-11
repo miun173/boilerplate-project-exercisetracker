@@ -1,5 +1,6 @@
 const path = require('path');
-const { repository } = require('../repository')
+const { repository } = require('../repository');
+const { dateToUnix  } = require('../utils')
 
 /**
  * register the routes
@@ -12,17 +13,20 @@ function register(app,  model) {
   app.post('/api/exercise/new-user', (req, res) => {
     const { username } = req.body;
     // check username
-    if(!username) return res.json(400);
-
+    if(!username) {
+      res.status(400).json({error: new Error('invalid_username')});
+      return;
+    }
+  
     // create new user
     repository.remote.createUser(model.user, username)
       .then((newUser) => {
-        console.log("new user id", newUser.id)      
-        res.status(200).redirect('/');
+        console.log("new user id", newUser.id);
+        res.redirect(200, '/');
       })
       .catch(error => {
         console.log("Error", error);
-        res.status(400).json({error: error});                
+        res.status(400).json({error: error});
       })
   });
 
@@ -34,9 +38,10 @@ function register(app,  model) {
     }
 
     // TODO: parse date into unix time
+    const dateUnixTime = dateToUnix(date);
 
     repository.remote.createExercise(model.user, model.exercise, 
-      { userId, description, duration, date })
+      { userId, description, duration, dateUnixTime })
       .then((newExercise) => {
         console.log("new exercise id", newExercise.id);
         res.status(200).redirect('/');
@@ -50,6 +55,25 @@ function register(app,  model) {
   })
 
   app.get('/api/exercise/log', (req, res) => {
+    const { userId,   } = req.body;
+    if(!userId) res.status(404).json({error: "unknown userId"});
+
+    /* data returned format
+
+      "_id": "HJW67J31N",
+      "username": "hayo",
+      "from": "Sat Nov 10 2018",
+      "to": "Wed Dec 12 2018",
+      "count": 1,
+      "log": [
+        {
+          "description": "makan",
+          "duration": 10,
+          "date": "Mon Dec 10 2018"
+        }
+      ]
+    */
+  })
 }
 
 module.exports.routes = {

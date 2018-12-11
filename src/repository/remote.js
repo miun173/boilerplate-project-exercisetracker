@@ -1,9 +1,11 @@
 function createUser(userModel, username) { return new Promise((resolve, reject) => {
-  userModel.create({ username: username }, (error, user) => {    
+  userModel.create({ username: username }, (error, user) => {
     if(error) {
       reject(error);
+      return;
     }
     
+    console.log(`user ${user.id} created`)
     resolve({id: user.id});
   })
 })}

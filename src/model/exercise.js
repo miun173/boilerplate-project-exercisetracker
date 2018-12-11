@@ -8,7 +8,7 @@ module.exports.exercise = {
             userId: Schema.Types.ObjectId,
             description: String,
             duration: Number,
-            date: String,
+            date: Number,
         })
     
         // create & return user model

@@ -88,8 +88,7 @@ function register(app,  model) {
 
     repository.remote.queryUserLogs(model.exercise, userId, filter)
       .then((exercises) => {
-        logs = {
-          ...logs,
+        const newLogs = Object.assign({}, logs,{
           count: exercises.length,
           log: exercises.map(el => {
             const dateString = unixToDate(el.date).toDateString()
@@ -99,9 +98,9 @@ function register(app,  model) {
               date: dateString,
             }
           }),
-        }
+        })
         
-        res.status(200).json(logs)
+        res.status(200).json(newLogs)
       })
       .catch(error => {
         // console.log("Error", error);
